@@ -8,7 +8,7 @@ type Language="th"|"en";
 const translations:Record<string,string>={
  "เปิดรับรายงานทั่วไป":"Public reporting enabled","เข้าสู่ระบบแล้ว":"Signed in","บัญชี":"Account","ยืนยันอีเมล / เข้าสู่ระบบ":"Verify email / Sign in",
  "ภาพรวมสถานการณ์":"Situation overview","สถานะรายงาน":"Report status","ข้อมูลย้อนหลัง":"History","CCTV ดอนหัวฬ่อ":"Don Hua Lo CCTV","เวลาไทย (UTC+7)":"Thailand time (UTC+7)",
- "ภาพรวมสถานการณ์น้ำท่วม":"Flood Situation Overview","ส่งออก CSV":"Export CSV","พิมพ์ / PDF":"Print / PDF","ส่งรายงานประจำวัน":"Submit daily report","วันที่รายงาน":"Report date","รายงานล่าสุด":"Latest report","ยังไม่มีรายงานในวันที่เลือก":"No reports for the selected date","กำลังโหลดข้อมูล":"Loading data",
+ "ภาพรวมสถานการณ์น้ำท่วม":"Flood Situation Overview","พิมพ์ / PDF":"Print / PDF","ส่งรายงานประจำวัน":"Submit daily report","วันที่รายงาน":"Report date","รายงานล่าสุด":"Latest report","ยังไม่มีรายงานในวันที่เลือก":"No reports for the selected date","กำลังโหลดข้อมูล":"Loading data","กรองบริษัท":"Filter company","บริษัททั้งหมด (ไม่กรอง)":"All companies",
  "บริษัททั้งหมด":"All companies","รายงานแล้ว":"Reported","ปกติ":"Normal","เฝ้าระวัง":"Watch","มีผลกระทบ":"Affected","วิกฤต":"Critical","ยังไม่รายงาน":"Not reported","บริษัท":"companies",
  "รอภาพรายงาน":"Waiting for report photos","รอภาพจากบริษัท":"Waiting for company photos","ภาพหน้าบริษัทประจำวัน":"Daily company photos","ยังไม่มีภาพหลักฐาน":"No evidence photos","ยังไม่มีข้อมูล":"No data","ทางเข้า":"Access","ทางเข้า–ออก":"Access","พนักงาน":"Employees","การผลิต":"Production","การจัดส่ง":"Delivery","การจัดส่ง (ลูกค้า)":"Delivery (customer)","ระดับน้ำ":"Water level","จุดวัด":"Measurement point","เวลาสำรวจ":"Survey time","รายละเอียด":"Details","ดูข้อมูล":"View details",
  "บริษัทที่ต้องติดตาม":"Companies requiring attention","รอรายงาน":"Awaiting reports","ส่งรายงานครบแล้ว":"All reports submitted","เปรียบเทียบแนวโน้มระดับน้ำ":"Compare water-level trends","ย้อนหลัง 7 วัน ณ วันที่เลือก":"Previous 7 days from selected date","สถานะการส่งรายงาน":"Reporting status","ทุกสถานะ":"All statuses","ประวัติระดับน้ำและรายงาน":"Water-level and report history","เก็บทุกรอบที่ส่ง โดยไม่เขียนทับรายงานเดิม":"Every submission is retained; previous reports are not overwritten","ประวัติการรายงาน":"Report history","ดูรูป":"View photos",
@@ -74,14 +74,14 @@ function applyLanguage(language:Language,root:ParentNode=document.body){
 }
 
 export default function LanguageToggle(){
- const [language,setLanguage]=useState<Language>('th');
+ const [language,setLanguage]=useState<Language>('en');
  useEffect(()=>{
-  const saved=window.localStorage.getItem('smg-language');
-  if(saved==='en')setLanguage('en');
+  const saved=window.localStorage.getItem('smg-language-v2');
+  if(saved==='th'||saved==='en')setLanguage(saved);
  },[]);
  useEffect(()=>{
   document.documentElement.lang=language;
-  window.localStorage.setItem('smg-language',language);
+  window.localStorage.setItem('smg-language-v2',language);
   applyLanguage(language);
   if(language!=='en')return;
   let translating=false;
@@ -97,5 +97,5 @@ export default function LanguageToggle(){
   observer.observe(document.body,{subtree:true,childList:true,characterData:true});
   return()=>observer.disconnect();
  },[language]);
- return <div className="language-switch" role="group" aria-label="เลือกภาษา / Choose language"><Languages size={16} aria-hidden="true"/><button type="button" className={language==='th'?'active':''} aria-pressed={language==='th'} onClick={()=>setLanguage('th')}>ไทย</button><span aria-hidden="true">|</span><button type="button" className={language==='en'?'active':''} aria-pressed={language==='en'} onClick={()=>setLanguage('en')}>EN</button></div>;
+ return <div className="language-switch" role="group" aria-label="เลือกภาษา / Choose language"><Languages size={16} aria-hidden="true"/><button type="button" className={language==='th'?'active':''} aria-pressed={language==='th'} onClick={()=>setLanguage('th')}>TH</button><span aria-hidden="true">/</span><button type="button" className={language==='en'?'active':''} aria-pressed={language==='en'} onClick={()=>setLanguage('en')}>EN</button></div>;
 }
