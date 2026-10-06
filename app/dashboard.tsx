@@ -100,7 +100,30 @@ function ReportForm({open,onOpenChange,onSaved,authenticated,signInHref,onAuthCh
  const files=useMemo(()=>[...exteriorFiles,...entranceFiles],[exteriorFiles,entranceFiles]);
  useEffect(()=>{if(open){setCompany(fixedCompany?.[0]??'');setDate(today());setTime(now());setReview(false);setError('');}},[open,initialCompany]);
  useEffect(()=>{const urls=files.map(f=>URL.createObjectURL(f));setPreviews(urls);return()=>urls.forEach(u=>URL.revokeObjectURL(u));},[files]);
- function validate(){setError('');if(!company||!date||!time||!point.trim()){setError('กรอกบริษัท วันที่ เวลา และจุดวัดให้ครบ');return;}if(date>today()||Date.parse(`${date}T${time}:00+07:00`)>Date.now()+60000){setError('วันที่และเวลาสำรวจต้องไม่อยู่ในอนาคต');return;}if(!waterLevels.some(x=>x.value===level)){setError('กรุณาเลือกระดับน้ำจากรายการ');return;}if(!validatePhotoCounts(exteriorFiles.length,entranceFiles.length)||files.some(f=>f.size>5*1024*1024||!['image/jpeg','image/png','image/webp'].includes(f.type))){setError('แนบภาพครบทั้ง 2 จุด จุดละ 1–3 ภาพ เป็น JPEG, PNG หรือ WebP ขนาดไม่เกินภาพละ 5 MB');return;}setReview(true);}
+ function validate(){
+  setError('');
+  if(!company||!date||!time||!point.trim()){
+   setError('กรอกบริษัท วันที่ เวลา และจุดวัดให้ครบ');
+   setTimeout(()=>document.getElementById(!company?'field-company':'field-point')?.scrollIntoView({behavior:'smooth',block:'center'}),50);
+   return;
+  }
+  if(date>today()||Date.parse(`${date}T${time}:00+07:00`)>Date.now()+60000){
+   setError('วันที่และเวลาสำรวจต้องไม่อยู่ในอนาคต');
+   setTimeout(()=>document.getElementById('field-date')?.scrollIntoView({behavior:'smooth',block:'center'}),50);
+   return;
+  }
+  if(!waterLevels.some(x=>x.value===level)){
+   setError('กรุณาเลือกระดับน้ำจากรายการ');
+   setTimeout(()=>document.getElementById('field-level')?.scrollIntoView({behavior:'smooth',block:'center'}),50);
+   return;
+  }
+  if(!validatePhotoCounts(exteriorFiles.length,entranceFiles.length)||files.some(f=>f.size>5*1024*1024||!['image/jpeg','image/png','image/webp'].includes(f.type))){
+   setError('แนบภาพครบทั้ง 2 จุด จุดละ 1–3 ภาพ เป็น JPEG, PNG หรือ WebP ขนาดไม่เกินภาพละ 5 MB');
+   setTimeout(()=>document.getElementById('field-photos')?.scrollIntoView({behavior:'smooth',block:'start'}),50);
+   return;
+  }
+  setReview(true);
+ }
  async function submit(){if(saving)return;setSaving(true);setError('');try{const sessionResponse=await authFetch('/api/reports',{headers:{Accept:'application/json'},credentials:'same-origin',redirect:'error',cache:'no-store'});const session=await readApiResponse<{authenticated:boolean}>(sessionResponse);onAuthChecked(session.authenticated===true);if(!session.authenticated)throw Error('กรุณากดปุ่มเข้าสู่ระบบด้วย Google จากนั้นกลับมาแท็บนี้แล้วกดยืนยันส่งรายงานอีกครั้ง ข้อมูลและรูปภาพที่เลือกยังอยู่ในแท็บนี้');const f=new FormData();Object.entries({company,date,time,level,point,status,road,attendance,production,transport,note,help}).forEach(([k,v])=>f.set(k,v));const uploads=[];for(const file of exteriorFiles)uploads.push(await uploadPhoto(file,'exterior',company));for(const file of entranceFiles)uploads.push(await uploadPhoto(file,'entrance',company));f.set('photoUploads',JSON.stringify(uploads));const res=await authFetch('/api/reports',{method:'POST',body:f,headers:{Accept:'application/json'},credentials:'same-origin',redirect:'error'});const data=await readApiResponse<{id:string}>(res);if(typeof data.id!=='string')throw Error('ระบบยังไม่ยืนยันการบันทึก กรุณาตรวจสอบรายงานก่อนส่งซ้ำ');onOpenChange(false);setReview(false);setExteriorFiles([]);setEntranceFiles([]);setLevel('');setNote('');setHelp('');await onSaved(date);}catch(e){setError(e instanceof TypeError?'การเชื่อมต่อขัดข้อง กรุณาตรวจสอบอินเทอร์เน็ตและสถานะเข้าสู่ระบบ แล้วลองส่งอีกครั้ง ข้อมูลในแบบฟอร์มยังอยู่':e instanceof Error?e.message:'บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง');}finally{setSaving(false);}}
  const options=(values:string[])=>values.map(v=>({value:v,label:v}));
  return <Dialog open={open} onOpenChange={v=>{if(!saving){onOpenChange(v);if(!v)setReview(false);}}}><DialogContent className="report-dialog"><DialogTitle><ClipboardList size={22}/>{review?'ตรวจสอบก่อนส่งรายงาน':'รายงานสถานการณ์ประจำวัน'}</DialogTitle><DialogDescription>บันทึกข้อมูลจริงพร้อมภาพหลักฐาน • อัปเดตเพิ่มเติมได้โดยเก็บรายงานเดิมไว้</DialogDescription><div className="form-steps"><span className={!review?'active':''}>1 ข้อมูลและรูปภาพ</span><span className={review?'active':''}>2 ตรวจสอบและส่ง</span></div>
@@ -108,21 +131,24 @@ function ReportForm({open,onOpenChange,onSaved,authenticated,signInHref,onAuthCh
  {!review?<form onSubmit={e=>{e.preventDefault();validate();}}>
   <div className="form-grid">
    <h3 className="form-section-title full">1. ข้อมูลบริษัทและรายงาน</h3>
-   <label className="full">บริษัท{fixedCompany?<div className="fixed-company-value"><CompanyLogo code={fixedCompany[0]} name={fixedCompany[1]}/><b>{fixedCompany[0]}</b><span>{fixedCompany[1]}</span><small>บริษัทที่เลือกไว้</small></div>:<Pick value={company} onChange={setCompany} label="บริษัทผู้รายงาน" placeholder="เลือกบริษัทที่ต้องการส่งรายงาน" options={alphabeticalCompanies.map(([c,n])=>({value:c,label:`${c} — ${n}`}))}/>}</label>
-   <label>วันที่รายงาน<div className="readonly-report-field" aria-label={`วันที่รายงาน ${dateLabel(date)}`}><CalendarDays size={18}/><b>{dateLabel(date)}</b><small>อัตโนมัติ</small></div></label>
-   <label>เวลาสำรวจ (เวลาไทย)<div className="readonly-report-field" aria-label={`เวลาสำรวจ ${time} นาฬิกา`}><Clock size={18}/><b>{time} น.</b><small>อัตโนมัติ</small></div></label>
-   <label>จุดวัดน้ำ<input required maxLength={100} value={point} onChange={e=>setPoint(e.target.value)} placeholder="เช่น ทางเข้าหลัก"/></label>
+   <label className="full" id="field-company">บริษัท <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b>{fixedCompany?<div className="fixed-company-value"><CompanyLogo code={fixedCompany[0]} name={fixedCompany[1]}/><b>{fixedCompany[0]}</b><span>{fixedCompany[1]}</span><small>บริษัทที่เลือกไว้</small></div>:<Pick value={company} onChange={setCompany} label="บริษัทผู้รายงาน" placeholder="เลือกบริษัทที่ต้องการส่งรายงาน" options={alphabeticalCompanies.map(([c,n])=>({value:c,label:`${c} — ${n}`}))}/>}</label>
+   <label id="field-date">วันที่รายงาน <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><div className="readonly-report-field" aria-label={`วันที่รายงาน ${dateLabel(date)}`}><CalendarDays size={18}/><b>{dateLabel(date)}</b><small>อัตโนมัติ</small></div></label>
+   <label>เวลาสำรวจ (เวลาไทย) <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><div className="readonly-report-field" aria-label={`เวลาสำรวจ ${time} นาฬิกา`}><Clock size={18}/><b>{time} น.</b><small>อัตโนมัติ</small></div></label>
+   <label id="field-point">จุดวัดน้ำ <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><input required maxLength={100} value={point} onChange={e=>setPoint(e.target.value)} placeholder="เช่น ทางเข้าหลัก"/></label>
+   
    <h3 className="form-section-title full">2. การประเมินสถานการณ์และผลกระทบต่อการดำเนินงาน</h3>
-   <label>สถานการณ์ที่บริษัทประเมิน (ระบบคำนวณผลสุดท้าย)<Pick label="สถานการณ์บริษัท" value={status} onChange={setStatus} options={Object.entries(statuses).filter(([s])=>s!=='missing').map(([value,s])=>({value,label:s.label}))}/></label>
-   <label>ทางเข้า–ออก<Pick label="สถานะทางเข้า" value={road} onChange={setRoad} options={options(['ผ่านได้','ผ่านได้บางประเภท','ผ่านไม่ได้'])}/></label>
-   <label>การมาทำงานของพนักงาน<Pick label="การมาทำงานของพนักงาน" value={attendance} onChange={setAttendance} options={options(['มาทำงานได้ปกติ','มาทำงานได้แต่ต้องใช้แผนฉุกเฉิน (รถรับส่ง)','มาทำงานไม่ได้'])}/></label>
-   <label>ผลกระทบต่อการผลิต<Pick label="ผลกระทบการผลิต" value={production} onChange={setProduction} options={options(['ไม่กระทบต่อกระบวนการผลิต','กระทบการผลิตบางส่วน','หยุดกระบวนการผลิต'])}/></label>
-   <label>การจัดส่ง (ผลกระทบลูกค้า)<Pick label="การจัดส่ง ผลกระทบลูกค้า" value={transport} onChange={setTransport} options={options(['ไม่มีผลกระทบ','ล่าช้า','เข้า–ออกไม่ได้'])}/></label>
+   <label>สถานการณ์ที่บริษัทประเมิน (ระบบคำนวณผลสุดท้าย) <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><Pick label="สถานการณ์บริษัท" value={status} onChange={setStatus} options={Object.entries(statuses).filter(([s])=>s!=='missing').map(([value,s])=>({value,label:s.label}))}/></label>
+   <label>ทางเข้า–ออก <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><Pick label="สถานะทางเข้า" value={road} onChange={setRoad} options={options(['ผ่านได้','ผ่านได้บางประเภท','ผ่านไม่ได้'])}/></label>
+   <label>การมาทำงานของพนักงาน <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><Pick label="การมาทำงานของพนักงาน" value={attendance} onChange={setAttendance} options={options(['มาทำงานได้ปกติ','มาทำงานได้แต่ต้องใช้แผนฉุกเฉิน (รถรับส่ง)','มาทำงานไม่ได้'])}/></label>
+   <label>ผลกระทบต่อการผลิต <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><Pick label="ผลกระทบการผลิต" value={production} onChange={setProduction} options={options(['ไม่กระทบต่อกระบวนการผลิต','กระทบการผลิตบางส่วน','หยุดกระบวนการผลิต'])}/></label>
+   <label>การจัดส่ง (ผลกระทบลูกค้า) <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b><Pick label="การจัดส่ง ผลกระทบลูกค้า" value={transport} onChange={setTransport} options={options(['ไม่มีผลกระทบ','ล่าช้า','เข้า–ออกไม่ได้'])}/></label>
+   
    <h3 className="form-section-title full">3. ระดับน้ำและรายละเอียดสถานการณ์</h3>
-   <WaterLevelPicker value={level} onChange={setLevel}/>
+   <span id="field-level"><WaterLevelPicker value={level} onChange={setLevel}/></span>
    <label className="full">รายละเอียดสถานการณ์ / เส้นทาง<textarea rows={3} value={note} maxLength={2000} onChange={e=>setNote(e.target.value)} placeholder="ระบุจุดน้ำขัง ถนน และประเภทรถที่ตรวจสอบได้"/></label>
    <label className="full">ความช่วยเหลือที่ต้องการ<input value={help} maxLength={1000} onChange={e=>setHelp(e.target.value)} placeholder="ระบุหากต้องการความช่วยเหลือ"/></label>
-   <h3 className="form-section-title full">4. ภาพหลักฐาน</h3>
+   
+   <h3 className="form-section-title full" id="field-photos">4. ภาพหลักฐาน <b style={{color:'#e11d48',marginLeft:'4px'}}>*</b></h3>
    <UploadPoint point="exterior" files={exteriorFiles} onChange={v=>{setExteriorFiles(v);setError('');}}/><UploadPoint point="entrance" files={entranceFiles} onChange={v=>{setEntranceFiles(v);setError('');}}/>
   </div>{error&&<p role="alert" className="form-error">{error}</p>}<div className="form-footer"><span><ShieldCheck size={15}/>ข้อมูลจะบันทึกหลังยืนยันส่ง</span><button type="submit" className="btn primary"><Eye size={17}/>ตรวจสอบรายงาน</button></div>
  </form>:<div><div className="review-summary"><div><span>บริษัท</span><b>{company}</b></div><div><span>วันที่ / เวลาสำรวจ</span><b>{dateLabel(date)} · {time} น.</b></div><div><span>จุดวัด</span><b>{point}</b></div><div><span>ระดับน้ำ</span><b>{waterLevelLabel(Number(level))}</b></div><div><span>สถานการณ์</span><Badge status={status as Status}/></div><div><span>ทางเข้า–ออก</span><b>{road}</b></div><div><span>การมาทำงานของพนักงาน</span><b>{attendance}</b></div><div><span>การผลิต</span><b>{productionLabel(production)}</b></div><div><span>การจัดส่ง (ผลกระทบลูกค้า)</span><b>{transportLabel(transport)}</b></div></div>{note&&<p className="note">{note}</p>}{help&&<p className="note">ความช่วยเหลือ: {help}</p>}<div className="review-photo-grid">{previews.map((p,i)=><figure key={p}><img src={p} alt={`${photoPointLabels[i<exteriorFiles.length?'exterior':'entrance']} ภาพที่ ${i+1}`} style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '4px' }}/><figcaption>{photoPointLabels[i<exteriorFiles.length?'exterior':'entrance']}</figcaption></figure>)}</div><p className="review-notice">{publicMode?'รายงานนี้จะบันทึกในชุดข้อมูลจริง โดยระบุผู้ส่งเป็น ผู้ส่งรายงานทั่วไป':'รายงานนี้จะบันทึกในชุดข้อมูลจริง และระบุผู้ส่งจากบัญชีที่เข้าสู่ระบบ'}</p>{error&&<div className="form-error" role="alert">{error}{!publicMode&&<p><a href={signInHref} target="_blank" rel="noopener noreferrer" className="text-btn">ยืนยันอีเมลในแท็บใหม่ ↗</a></p>}</div>}<div className="form-footer"><button disabled={saving} className="btn secondary" onClick={()=>setReview(false)}>กลับไปแก้ไข</button><button disabled={saving} className="btn primary" onClick={()=>void submit()}>{saving?<Loader2 size={17} className="spin"/>:<CheckCircle2 size={17}/>} {saving?'กำลังบันทึก…':'ยืนยันส่งรายงาน'}</button></div></div>}
