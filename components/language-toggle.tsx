@@ -19,7 +19,13 @@ const translations:Record<string,string>={
  "แห้ง / ต่ำกว่าข้อเท้า":"Dry / below ankle","ข้อเท้า–เข่า":"Ankle–knee","เข่า–เอว":"Knee–waist","เอว–อก":"Waist–chest","อกขึ้นไป":"Above chest","มิดหัว / ท่วมหลังคา":"Over head / roof level","ซม.":"cm","หน่วย: เซนติเมตร":"Unit: centimetres",
  "ผ่านได้":"Passable","ผ่านได้บางประเภท":"Passable for Certain Vehicle Types Only","ผ่านไม่ได้":"Impassable","ยังไม่ตรวจสอบ":"Not checked","มาทำงานได้ปกติ":"Available for Work","มาทำงานไม่ได้":"Unavailable for Work","มาทำงานได้แต่ต้องใช้แผนฉุกเฉิน (รถรับส่ง)":"Available for Work via Emergency Transportation Plan","ไม่กระทบต่อกระบวนการผลิต":"No Production Impact","กระทบการผลิตบางส่วน":"Some Production Impact","กระทบกระบวนการผลิต":"Production affected","หยุดกระบวนการผลิต":"Stop line production","ไม่มีผลกระทบ":"No impact","ล่าช้า":"Delivery Delayed","เข้า–ออกไม่ได้":"Can Not Delivery",
  "ยังเปรียบเทียบไม่ได้":"Insufficient data","คงที่":"Steady","เพิ่ม":"Up","ลด":"Down","น้ำกำลังขึ้น":"Rising","ทรงตัว":"Steady","กำลังลด":"Falling","สรุปสถานการณ์จากรายงานประจำวัน":"Daily report summary","ต้องติดตามเร่งด่วน":"Urgent attention required","รอภาพรายงานจากบริษัท":"Waiting for company report photos",
- "กำลังตรวจสอบสิทธิ์…":"Checking access…","กรุณาเลือกบริษัท":"Please select a company","กรุณาแนบภาพทั้ง 2 จุด จุดละ 1–3 ภาพ":"Please attach 1–3 photos for each of the two locations","บันทึกรายงานเรียบร้อย":"Report saved successfully","ส่งรายงานไม่สำเร็จ":"Report submission failed","ไม่สามารถโหลดข้อมูลได้":"Unable to load data","ลองใหม่":"Try again","ปิด":"Close"
+ "กำลังตรวจสอบสิทธิ์…":"Checking access…","กรุณาเลือกบริษัท":"Please select a company","กรุณาแนบภาพทั้ง 2 จุด จุดละ 1–3 ภาพ":"Please attach 1–3 photos for each of the two locations","บันทึกรายงานเรียบร้อย":"Report saved successfully","ส่งรายงานไม่สำเร็จ":"Report submission failed","ไม่สามารถโหลดข้อมูลได้":"Unable to load data","ลองใหม่":"Try again","ปิด":"Close",
+ "กรอกบริษัท วันที่ เวลา และจุดวัดให้ครบ":"Please fill in the company, date, time, and measurement point completely",
+ "วันที่และเวลาสำรวจต้องไม่อยู่ในอนาคต":"Survey date and time cannot be in the future",
+ "กรุณาเลือกระดับน้ำจากรายการ":"Please select a water level from the list",
+ "แนบภาพครบทั้ง 2 จุด จุดละ 1–3 ภาพ เป็น JPEG, PNG หรือ WebP ขนาดไม่เกินภาพละ 5 MB":"Please attach 1-3 photos per location (JPEG/PNG/WebP, max 5MB)",
+ "การเชื่อมต่อขัดข้อง กรุณาตรวจสอบอินเทอร์เน็ตและสถานะเข้าสู่ระบบ แล้วลองส่งอีกครั้ง ข้อมูลในแบบฟอร์มยังอยู่":"Connection error. Please check your internet and login status, then try again.",
+ "บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง":"Save failed. Please try again."
 };
 
 const originalText=new WeakMap<Text,string>();
@@ -56,8 +62,6 @@ function applyLanguage(language:Language,root:ParentNode=document.body){
   if(parent&&!['SCRIPT','STYLE','NOSCRIPT'].includes(parent.tagName)){
    let source=originalText.get(node);
    const currentData=node.data;
-
-   // บายพาสให้ React อัปเดตข้อมูลได้: ถ้าระบบพบว่าข้อความถูกเปลี่ยนโดยหน้าเว็บ ให้ยอมรับข้อความใหม่
    if(source!==undefined){
      const expectedData=language==='en'?translated(source):source;
      if(currentData!==expectedData){
@@ -68,7 +72,6 @@ function applyLanguage(language:Language,root:ParentNode=document.body){
      source=currentData;
      originalText.set(node,source);
    }
-
    const newTranslated=language==='en'?translated(source):source;
    if(node.data!==newTranslated){
      node.data=newTranslated;
@@ -82,10 +85,8 @@ function applyLanguage(language:Language,root:ParentNode=document.body){
    if(!element.hasAttribute(attribute))continue;
    let values=originalAttributes.get(element);
    if(!values){values=new Map();originalAttributes.set(element,values);}
-   
    let source=values.get(attribute);
    const currentAttr=element.getAttribute(attribute)??'';
-   
    if(source!==undefined){
      const expectedAttr=language==='en'?translated(source):source;
      if(currentAttr!==expectedAttr){
@@ -96,7 +97,6 @@ function applyLanguage(language:Language,root:ParentNode=document.body){
      source=currentAttr;
      values.set(attribute,source);
    }
-   
    const newAttr=language==='en'?translated(source):source;
    if(element.getAttribute(attribute)!==newAttr){
      element.setAttribute(attribute,newAttr);
