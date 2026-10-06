@@ -205,3 +205,11 @@ h3,.company-name h3,.summary-company-head>button{font-weight:800}
 .readonly-report-field{display:flex;align-items:center;gap:9px;width:100%;min-height:43px;padding:9px 12px;border:1px solid #d8e3ee;border-radius:7px;background:#f1f5f9;color:#365b7e;cursor:default}.readonly-report-field svg{color:#2874ad;flex-shrink:0}.readonly-report-field b{font-size:14px;font-weight:700}.readonly-report-field small{margin-left:auto;color:#7f91a3;font-size:11px;font-weight:500}
 
 .form-section-title{display:flex;align-items:center;gap:10px;margin:8px 0 -2px;padding:10px 12px;border-left:4px solid #1b73bd;border-radius:6px;background:#eef6fc;color:#183f68;font-size:15px;font-weight:700;line-height:1.5}.form-section-title:first-child{margin-top:0}
+
+/* Keep the two-column report form aligned when English field names wrap. */
+.form-grid label{min-width:0}
+.form-grid>label:not(.full){display:grid;grid-template-rows:40px 48px;align-items:start}
+.form-grid .picker{height:48px!important;min-height:48px;max-height:48px}
+.form-grid .picker [data-slot=select-value]{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;line-height:1.3;overflow:hidden;text-overflow:ellipsis}
+.form-grid input:not([type=file]){min-height:48px}
+.form-grid .readonly-report-field{height:48px;min-height:48px}
