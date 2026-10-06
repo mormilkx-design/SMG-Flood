@@ -185,9 +185,13 @@ h3,.company-name h3,.summary-company-head>button{font-weight:800}
 .calendar-field:focus-within{outline:2px solid #77b8e6;outline-offset:1px}
 
 /* Thai / English language selector. */
-.language-switch{display:inline-flex;align-items:center;gap:5px;padding:5px 7px;border:1px solid #5b7899;border-radius:8px;background:#183b61;color:#a9bfd4;white-space:nowrap}
-.language-switch button{border:0;background:transparent;color:#a9bfd4;padding:3px 5px;border-radius:5px;font:700 12px/1 var(--dashboard-font);cursor:pointer}
-.language-switch button:hover{color:#fff;background:#ffffff12}.language-switch button.active{background:#fff;color:#123b61}.language-switch button:focus-visible{outline:2px solid #43c8ee;outline-offset:2px}
-@media(max-width:760px){.language-switch{order:-1;margin-left:auto}.header-right{flex-wrap:wrap;justify-content:flex-end}}
+.nav-tools{display:flex;align-items:center;gap:10px;margin-left:auto}.language-switch{display:inline-flex;align-items:center;gap:4px;padding:6px 8px;border:1px solid #9ebdd7;border-radius:8px;background:#fff;color:#497394;white-space:nowrap;min-height:40px}
+.language-switch button{border:0;background:transparent;color:#678198;padding:5px 7px;border-radius:5px;font:700 12px/1 var(--dashboard-font);cursor:pointer}
+.language-switch button:hover{color:#0e5b99;background:#eaf4fb}.language-switch button.active{background:#1464b8;color:#fff}.language-switch button:focus-visible{outline:2px solid #43c8ee;outline-offset:2px}
+@media(max-width:850px){.nav-tools{width:100%;justify-content:flex-end;padding:8px 0}.language-switch{margin-left:auto}}
 @media(max-width:560px){.language-switch{padding:4px 6px}.language-switch>svg{display:none}.language-switch button{font-size:11px}}
 @media print{.language-switch{display:none!important}}
+
+.toolbar-filters{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.company-filter-control{display:flex;align-items:center;gap:10px;font-size:14px}.company-filter-control>label{font-weight:700;white-space:nowrap}.company-filter-control .picker{width:310px;max-width:42vw}
+@media(max-width:760px){.toolbar-filters{width:100%;align-items:flex-start}.company-filter-control{width:100%}.company-filter-control .picker{width:100%;max-width:none}.company-filter-control>label{min-width:82px}}
+@media(max-width:560px){.company-filter-control{align-items:flex-start;flex-direction:column;gap:5px}.company-filter-control>label{min-width:0}.nav-tools{gap:7px}.cctv-nav-link{margin-left:0!important}}
