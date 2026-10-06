@@ -195,3 +195,16 @@ h3,.company-name h3,.summary-company-head>button{font-weight:800}
 .toolbar-filters{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.company-filter-control{display:flex;align-items:center;gap:10px;font-size:14px}.company-filter-control>label{font-weight:700;white-space:nowrap}.company-filter-control .picker{width:310px;max-width:42vw}
 @media(max-width:760px){.toolbar-filters{width:100%;align-items:flex-start}.company-filter-control{width:100%}.company-filter-control .picker{width:100%;max-width:none}.company-filter-control>label{min-width:82px}}
 @media(max-width:560px){.company-filter-control{align-items:flex-start;flex-direction:column;gap:5px}.company-filter-control>label{min-width:0}.nav-tools{gap:7px}.cctv-nav-link{margin-left:0!important}}
+<<<<<<< HEAD
+
+/* Keep each company code and its status on one aligned row. */
+.summary-company-head{flex-wrap:nowrap;gap:4px}.summary-company-head .company-logo-box{width:38px;min-width:38px}.summary-company-code{min-width:0;flex:0 1 auto;font-size:13px;white-space:nowrap}.summary-company-head .badge{margin-left:auto!important;flex:0 0 auto;font-size:10px;padding:3px 4px;gap:3px;white-space:nowrap}
+
+.fixed-company-value{display:flex;align-items:center;gap:10px;min-height:54px;padding:7px 11px;border:1px solid #b9d1e4;border-radius:8px;background:#eef7fd;color:#234e73}.fixed-company-value .company-logo-box{width:54px;height:36px;min-width:54px}.fixed-company-value b{font-size:15px}.fixed-company-value span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#526f89}.fixed-company-value small{margin-left:auto;white-space:nowrap;color:#347ba8;font-size:11px}
+@media(max-width:560px){.fixed-company-value{gap:7px}.fixed-company-value span{display:none}.fixed-company-value small{font-size:10px}}
+
+.readonly-report-field{display:flex;align-items:center;gap:9px;width:100%;min-height:43px;padding:9px 12px;border:1px solid #d8e3ee;border-radius:7px;background:#f1f5f9;color:#365b7e;cursor:default}.readonly-report-field svg{color:#2874ad;flex-shrink:0}.readonly-report-field b{font-size:14px;font-weight:700}.readonly-report-field small{margin-left:auto;color:#7f91a3;font-size:11px;font-weight:500}
+
+.form-section-title{display:flex;align-items:center;gap:10px;margin:8px 0 -2px;padding:10px 12px;border-left:4px solid #1b73bd;border-radius:6px;background:#eef6fc;color:#183f68;font-size:15px;font-weight:700;line-height:1.5}.form-section-title:first-child{margin-top:0}
+=======
+>>>>>>> 953e25fec70149f3d0a57f3b658d02a9195eb1a4
