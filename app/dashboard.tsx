@@ -114,8 +114,8 @@ function ReportForm({open,onOpenChange,onSaved,authenticated,signInHref,onAuthCh
    <label>จุดวัดน้ำ<input required maxLength={100} value={point} onChange={e=>setPoint(e.target.value)} placeholder="เช่น ทางเข้าหลัก"/></label>
    <h3 className="form-section-title full">2. การประเมินสถานการณ์และผลกระทบต่อการดำเนินงาน</h3>
    <label>สถานการณ์ที่บริษัทประเมิน (ระบบคำนวณผลสุดท้าย)<Pick label="สถานการณ์บริษัท" value={status} onChange={setStatus} options={Object.entries(statuses).filter(([s])=>s!=='missing').map(([value,s])=>({value,label:s.label}))}/></label>
-   <label>ทางเข้า–ออก<Pick label="สถานะทางเข้า" value={road} onChange={setRoad} options={options(['ผ่านได้','ผ่านได้บางประเภท','ผ่านไม่ได้'])}/></label>
-   <label>การมาทำงานของพนักงาน<Pick label="การมาทำงานของพนักงาน" value={attendance} onChange={setAttendance} options={options(['มาทำงานได้ปกติ','มาทำงานได้แต่ต้องใช้แผนฉุกเฉิน (รถรับส่ง)','มาทำงานไม่ได้'])}/></label>
+   <label>ทางเข้า–ออก<Pick label="สถานะทางเข้า" value={road} onChange={setRoad} options={options(['ผ่านได้','ผ่านไม่ได้','ผ่านได้บางประเภท'])}/></label>
+   <label>การมาทำงานของพนักงาน<Pick label="การมาทำงานของพนักงาน" value={attendance} onChange={setAttendance} options={options(['มาทำงานได้ปกติ','มาทำงานไม่ได้','มาทำงานได้แต่ต้องใช้แผนฉุกเฉิน (รถรับส่ง)'])}/></label>
    <label>ผลกระทบต่อการผลิต<Pick label="ผลกระทบการผลิต" value={production} onChange={setProduction} options={options(['ไม่กระทบต่อกระบวนการผลิต','กระทบการผลิตบางส่วน','หยุดกระบวนการผลิต'])}/></label>
    <label>การจัดส่ง (ผลกระทบลูกค้า)<Pick label="การจัดส่ง ผลกระทบลูกค้า" value={transport} onChange={setTransport} options={options(['ไม่มีผลกระทบ','ล่าช้า','เข้า–ออกไม่ได้'])}/></label>
    <h3 className="form-section-title full">3. ระดับน้ำและรายละเอียดสถานการณ์</h3>
