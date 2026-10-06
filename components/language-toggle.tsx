@@ -85,17 +85,31 @@ export default function LanguageToggle(){
   applyLanguage(language);
   if(language!=='en')return;
   let translating=false;
+  
   const observer=new MutationObserver(records=>{
    if(translating)return;
    translating=true;observer.disconnect();
    for(const record of records){
-    if(record.type==='characterData'&&record.target.parentNode)applyLanguage(language,record.target.parentNode);
-    for(const node of Array.from(record.addedNodes))if(node.nodeType===Node.ELEMENT_NODE)applyLanguage(language,node as Element);else if(node.nodeType===Node.TEXT_NODE&&node.parentNode)applyLanguage(language,node.parentNode);
+    /* 
+       FIX: เมื่อ React ดึงข้อมูลจากฐานข้อมูลเสร็จ และพยายามอัปเดตตัวเลข / สถานะ 
+       ให้รับค่าใหม่จาก React มาเป็นต้นฉบับ แทนที่จะเขียนทับด้วยค่าเก่า
+    */
+    if(record.type==='characterData'&&record.target.parentNode){
+      originalText.set(record.target as Text, (record.target as Text).data);
+      applyLanguage(language,record.target.parentNode);
+    }
+    
+    for(const node of Array.from(record.addedNodes)){
+      if(node.nodeType===Node.ELEMENT_NODE)applyLanguage(language,node as Element);
+      else if(node.nodeType===Node.TEXT_NODE&&node.parentNode)applyLanguage(language,node.parentNode);
+    }
    }
    observer.observe(document.body,{subtree:true,childList:true,characterData:true});translating=false;
   });
+  
   observer.observe(document.body,{subtree:true,childList:true,characterData:true});
   return()=>observer.disconnect();
  },[language]);
+ 
  return <div className="language-switch" role="group" aria-label="เลือกภาษา / Choose language"><Languages size={16} aria-hidden="true"/><button type="button" className={language==='th'?'active':''} aria-pressed={language==='th'} onClick={()=>setLanguage('th')}>TH</button><span aria-hidden="true">/</span><button type="button" className={language==='en'?'active':''} aria-pressed={language==='en'} onClick={()=>setLanguage('en')}>EN</button></div>;
 }
