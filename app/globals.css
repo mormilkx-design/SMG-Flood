@@ -213,3 +213,8 @@ h3,.company-name h3,.summary-company-head>button{font-weight:800}
 .form-grid .picker [data-slot=select-value]{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;line-height:1.3;overflow:hidden;text-overflow:ellipsis}
 .form-grid input:not([type=file]){min-height:48px}
 .form-grid .readonly-report-field{height:48px;min-height:48px}
+
+/* Let the water-level selector use the full report-dialog width. */
+.form-grid>.water-level-field.full{grid-column:1/-1!important;width:100%;max-width:none;justify-self:stretch}
+.water-level-options{width:100%}
+.water-level-option{width:100%}
