@@ -63,9 +63,9 @@ export default function Dashboard({signInHref,initialAuthenticated}:{signInHref:
  const latest=records.filter(x=>x.r).map(x=>x.r!.submitted).sort().at(-1);
  function printSummary(){
   if(!loaded){toast.error('รอโหลดรายงานให้เสร็จก่อนพิมพ์');return;}
-  // The native print dialog must be opened synchronously from the user's tap.
-  // Waiting for images/fonts first causes iOS and mobile browsers to block it.
-  window.print();
+  // Some mobile/in-app browsers silently ignore window.print(). Navigate to a
+  // dedicated preview first so the user always gets a visible result.
+  window.location.assign(`/print?date=${encodeURIComponent(date)}`);
  }
  return <div className={`app ${tab==='summary'?'summary-mode':''}`}><Toaster richColors position="top-center"/><header className="masthead"><div className="brand"><div className="brand-mark"><img src="/logos/smg.png" alt="โลโก้ SMG Manufacturing Club"/></div><div><strong>SMG MANUFACTURING CLUB</strong><span>FLOOD MONITORING</span></div></div><div className="header-right"><span className="club-tag">{totalCompanies} COMPANIES · ONE DASHBOARD</span>{publicMode?<span className="signed-in-label"><ShieldCheck size={16}/>เปิดรับรายงานทั่วไป</span>:authenticated?<span className="signed-in-label"><ShieldCheck size={16}/>เข้าสู่ระบบแล้ว <a href="/verify-email" style={{color:'inherit',marginLeft:8}}>บัญชี</a></span>:<a className="header-sign-in" href={signInHref} target="_top"><LogIn size={16}/>ยืนยันอีเมล / เข้าสู่ระบบ</a>}</div></header>
  <Tabs value={tab} onValueChange={setTab}><div className="nav-wrap"><TabsList className="nav-tabs" variant="line"><TabsTrigger value="summary"><LayoutDashboard/>ภาพรวมสถานการณ์</TabsTrigger><TabsTrigger value="reports"><ClipboardList/>สถานะรายงาน</TabsTrigger><TabsTrigger value="history"><History/>ข้อมูลย้อนหลัง</TabsTrigger></TabsList><div className="nav-tools"><LanguageToggle/><a className="cctv-nav-link" href="/cctv"><Camera size={17}/>CCTV ดอนหัวฬ่อ</a><span className="nav-meta"><Clock size={14}/> เวลาไทย (UTC+7)</span></div></div>
