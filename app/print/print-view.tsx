@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {ArrowLeft,Loader2,Printer,RefreshCw,Share2} from 'lucide-react';
 import PrintReport from '../print-report';
 import {fetchReports} from '@/lib/supabase-browser';
@@ -10,6 +10,9 @@ export default function PrintView({date}:{date:string}){
  const [rows,setRows]=useState<Report[]>([]);
  const [loading,setLoading]=useState(true);
  const [error,setError]=useState('');
+ const previewRef=useRef<HTMLDivElement>(null);
+ const reportRef=useRef<HTMLDivElement>(null);
+ const [previewSize,setPreviewSize]=useState({scale:1,height:0});
 
  async function load(){
   setLoading(true);setError('');
@@ -18,6 +21,17 @@ export default function PrintView({date}:{date:string}){
   finally{setLoading(false);}
  }
  useEffect(()=>{void load();},[]);
+ useEffect(()=>{
+  const viewport=previewRef.current,report=reportRef.current;
+  if(!viewport||!report)return;
+  const resize=()=>{
+   const scale=Math.min(1,viewport.clientWidth/report.offsetWidth);
+   setPreviewSize({scale,height:report.offsetHeight*scale});
+  };
+  const observer=new ResizeObserver(resize);
+  observer.observe(viewport);observer.observe(report);resize();
+  return ()=>observer.disconnect();
+ },[loading,error]);
 
  function print(){window.print();}
  async function share(){
@@ -35,6 +49,6 @@ export default function PrintView({date}:{date:string}){
   <p className="print-mobile-help">หากกดพิมพ์แล้วไม่เปิดเมนู ให้เปิดหน้านี้ใน Safari หรือ Chrome จากนั้นเลือก Share → Print หรือ Save as PDF</p>
   {loading&&<div className="print-preview-state"><Loader2 className="spin"/>กำลังเตรียมรายงาน…</div>}
   {error&&<div className="print-preview-state error"><span>{error}</span><button type="button" className="btn secondary" onClick={()=>void load()}><RefreshCw size={16}/>ลองใหม่</button></div>}
-  {!loading&&!error&&<div className="print-preview-document"><PrintReport rows={rows} date={date}/></div>}
+  {!loading&&!error&&<div ref={previewRef} className="print-preview-document"><div className="print-preview-fit" style={{height:previewSize.height||undefined}}><div ref={reportRef} className="print-preview-scaled" style={{transform:`scale(${previewSize.scale})`}}><PrintReport rows={rows} date={date}/></div></div></div>}
  </main>;
 }
