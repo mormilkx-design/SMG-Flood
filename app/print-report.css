@@ -6,7 +6,7 @@
 .print-mobile-help{max-width:1000px;margin:0 auto 14px;padding:10px 12px;border-radius:8px;background:#edf6fd;color:#49718f;font-size:13px}
 .print-preview-state{display:flex;align-items:center;justify-content:center;gap:10px;min-height:260px;color:#55728f}.print-preview-state.error{flex-direction:column;color:#b44052}
 .print-preview-document{width:100%;max-width:100%;overflow:hidden;padding:0 0 20px}
-.print-preview-fit{position:relative;width:100%;max-width:190mm;margin:0 auto}
+.print-preview-fit{position:relative;width:100%;max-width:285mm;margin:0 auto}
 .print-preview-scaled{width:190mm;transform-origin:top left}
 
 }
@@ -23,7 +23,7 @@
 @media screen, print{
  .pdf-report{display:block;width:190mm!important;min-width:190mm!important;max-width:190mm!important;margin:0 auto!important;font-family:'Noto Sans Thai',Tahoma,Arial,sans-serif;color:#142d4f;font-size:11px;line-height:1.35;print-color-adjust:exact;-webkit-print-color-adjust:exact}
  .pdf-report *{box-sizing:border-box}
- .pdf-sheet{display:flex!important;flex-direction:column;width:190mm!important;min-width:190mm!important;max-width:190mm!important;height:277mm!important;min-height:277mm!important;max-height:277mm!important;overflow:hidden!important;break-before:page;page-break-before:always;break-after:page;page-break-after:always}
+ .pdf-sheet{display:flex!important;flex-direction:column;width:190mm!important;min-width:190mm!important;max-width:190mm!important;height:auto!important;min-height:277mm!important;max-height:none!important;overflow:visible!important;break-before:page;page-break-before:always;break-after:page;page-break-after:always}
  .pdf-sheet:first-child{break-before:auto;page-break-before:auto}
  .pdf-sheet:last-child{break-after:auto;page-break-after:auto}
  .pdf-heading{display:block;position:relative;text-align:center;margin:0 0 1.5mm;padding:0;min-height:0;break-inside:avoid}
@@ -42,23 +42,23 @@
  .pdf-status{flex:1;text-align:center;background:#1765a6;color:#fff;border-radius:1.5mm;padding:1mm .5mm;font-size:10px;line-height:1.3}
  .pdf-status b{display:block;font-size:12px}.pdf-status small{font-size:9px}
  .pdf-status.critical{background:#c91832}.pdf-status.watch{background:#ed6c0c}.pdf-status.normal{background:#168565}
- .pdf-company-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:2mm 1.5mm;width:100%;min-height:0;flex:1;margin:0;break-inside:avoid!important;page-break-inside:avoid!important}
- .pdf-company{display:flex!important;min-width:0;min-height:0;flex-direction:column;vertical-align:top;border:1px solid #9dabb9;border-radius:2mm;background:#fff;overflow:hidden!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ .pdf-company-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(69mm,auto));gap:2mm 1.5mm;width:100%;min-height:0;flex:none;margin:0;break-inside:auto!important;page-break-inside:auto!important}
+ .pdf-company{display:flex!important;min-width:0;min-height:0;flex-direction:column;vertical-align:top;border:1px solid #9dabb9;border-radius:2mm;background:#fff;overflow:visible!important;break-inside:avoid!important;page-break-inside:avoid!important}
  .pdf-company-title{flex:none;min-height:9mm;padding:1mm 1.5mm;background:#f0f4f8;border-bottom:1px solid #cdd9e4;border-radius:2mm 2mm 0 0}
  .pdf-title-row{display:flex;align-items:center;gap:1.5mm}.pdf-index{display:flex;align-items:center;justify-content:center;width:5mm;height:5mm;flex-shrink:0;border-radius:50%;background:#1765a6;color:#fff;font-size:12px;font-weight:800}
  .pdf-title-row>b{flex:1;font-size:14px;line-height:1.2}.pdf-title-row>img{width:14mm;height:5mm;object-fit:contain;flex-shrink:0}
  .pdf-company-title p{font-size:8.5px;line-height:1.25;margin:.4mm 0 0;white-space:normal;overflow-wrap:anywhere}
- .pdf-photos{display:block;width:auto;padding:1mm;background:#eaf0f6;height:28mm;flex:none;font-size:0;white-space:nowrap}
+ .pdf-photos{display:block;width:auto;padding:1mm;background:#eaf0f6;height:24mm;flex:none;font-size:0;white-space:nowrap}
  .pdf-photos figure{display:inline-block;width:50%;min-width:0;vertical-align:top;margin:0;padding:0 .5mm}
- .pdf-photos img{width:100%;max-width:100%;height:23mm;object-fit:contain;display:block}
+ .pdf-photos img{width:100%;max-width:100%;height:19mm;object-fit:contain;display:block}
  .pdf-photos figcaption{font-size:7px;text-align:center;line-height:1.25;padding:.5mm 0;white-space:normal}
  .pdf-photos.empty{display:flex;align-items:center;justify-content:center}.pdf-no-photo{text-align:center;color:#6e8296;font-size:9px;padding:1mm}
  .pdf-risk-row{flex:none;display:flex;width:auto;align-items:stretch;background:#f0f4f8}.pdf-risk-score{display:flex;align-items:center;justify-content:center;flex:0 0 40%;min-width:0;text-align:center;font-size:7px;padding:.5mm;color:#142d4f}.pdf-risk-score b{font-size:11px;display:inline-block;margin-left:1mm;color:#1765a6}
  .pdf-company-status{display:flex;align-items:center;flex:0 0 60%;min-width:0;padding:1mm;background:#1765a6;color:#fff;font-size:9px;font-weight:800;line-height:1.4;white-space:nowrap}
- .pdf-company-facts{flex:1;min-height:0;padding:1.5mm;font-size:9px;line-height:1.25}
+ .pdf-company-facts{flex:none;min-height:0;padding:1.5mm;font-size:9px;line-height:1.25}
  .pdf-company-facts p{display:block;position:relative;padding-left:2.3mm;margin:0 0 .2mm;overflow-wrap:anywhere}.pdf-company-facts p:before{content:"";position:absolute;left:0;top:1.3mm;width:1mm;height:1mm;border-radius:50%;background:#1765a6}
  .pdf-company-facts span{font-weight:700;margin-right:1mm}.pdf-company-facts b{font-weight:500;white-space:normal;overflow-wrap:anywhere}
- .pdf-water{flex:none;margin:0 1.5mm 1.5mm;padding:1mm;background:#edf5fd;border:1px solid #b9cbdd;border-radius:1.5mm;display:flex;align-items:center;justify-content:space-between;gap:1mm;font-size:9px;line-height:1.25}
+ .pdf-water{flex:none;margin-top:auto!important;margin:0 1.5mm 1.5mm;padding:1mm;background:#edf5fd;border:1px solid #b9cbdd;border-radius:1.5mm;display:flex;align-items:center;justify-content:space-between;gap:1mm;font-size:9px;line-height:1.25}
  .pdf-water-band{text-align:right;color:#1765a6;font-size:10px}.pdf-water small{font-size:8px}
  .pdf-company.critical .pdf-risk-score b{color:#c91832}.pdf-company.watch .pdf-risk-score b{color:#c85a00}.pdf-company.normal .pdf-risk-score b{color:#117355}.pdf-company.critical .pdf-company-facts p:before{background:#c91832}.pdf-company.watch .pdf-company-facts p:before{background:#ed6c0c}.pdf-company.normal .pdf-company-facts p:before{background:#168565}
  .pdf-company.critical{border:2px solid #c91832;background:#fff8f8}.pdf-company.critical .pdf-index,.pdf-company.critical .pdf-company-status{background:#c91832}.pdf-company.critical .pdf-water strong{color:#c91832}
