@@ -8,7 +8,7 @@ type Language="th"|"en";
 const translations:Record<string,string>={
  "เปิดรับรายงานทั่วไป":"Public reporting enabled","เข้าสู่ระบบแล้ว":"Signed in","บัญชี":"Account","ยืนยันอีเมล / เข้าสู่ระบบ":"Verify email / Sign in",
  "ภาพรวมสถานการณ์":"Situation overview","สถานะรายงาน":"Report status","ข้อมูลย้อนหลัง":"History","CCTV ดอนหัวฬ่อ":"Don Hua Lo CCTV","เวลาไทย (UTC+7)":"Thailand time (UTC+7)",
- "ภาพรวมสถานการณ์น้ำท่วม":"Flood Situation Overview","พิมพ์ / PDF":"Print / PDF","ส่งรายงานประจำวัน":"Create Daily Report","วันที่รายงาน":"Report date","รายงานล่าสุด":"Latest report","ยังไม่มีรายงานในวันที่เลือก":"No reports for the selected date","กำลังโหลดข้อมูล":"Loading data","กรองบริษัท":"Filter company","บริษัททั้งหมด (ไม่กรอง)":"All companies","เลือกบริษัทที่ต้องการส่งรายงาน":"Select a company","บริษัทที่เลือกไว้":"Selected company","อัตโนมัติ":"Automatic",
+ "ภาพรวมสถานการณ์น้ำท่วม":"Flood Situation Overview","ภาพรวมสถานการณ์น้ำท่วม · SMG MANUFACTURING CLUB":"Flood Situation Overview · SMG MANUFACTURING CLUB","สถานการณ์น้ำท่วม":"Flood Situation","พิมพ์ / PDF":"Print / PDF","ส่งรายงานประจำวัน":"Create Daily Report","วันที่รายงาน":"Report date","รายงานล่าสุด":"Latest report","ยังไม่มีรายงานในวันที่เลือก":"No reports for the selected date","กำลังโหลดข้อมูล":"Loading data","กรองบริษัท":"Filter company","บริษัททั้งหมด (ไม่กรอง)":"All companies","เลือกบริษัทที่ต้องการส่งรายงาน":"Select a company","บริษัทที่เลือกไว้":"Selected company","อัตโนมัติ":"Automatic",
  "บริษัททั้งหมด":"All companies","รายงานแล้ว":"Reported","ปกติ":"Normal","เฝ้าระวัง":"Monitoring","มีผลกระทบ":"Affected","วิกฤต":"Critical","ยังไม่รายงาน":"Not reported","บริษัท":"companies",
  "รอภาพรายงาน":"Waiting for report photos","รอภาพจากบริษัท":"Waiting for company photos","ภาพหน้าบริษัทประจำวัน":"Daily company photos","ยังไม่มีภาพหลักฐาน":"No evidence photos","ยังไม่มีข้อมูล":"No data","ทางเข้า":"Access","ทางเข้า–ออก":"Traffic Accessibility","พนักงาน":"Employees","การผลิต":"Production","การจัดส่ง":"Delivery","การจัดส่ง (ลูกค้า)":"Delivery (customer)","ระดับน้ำ":"Water level","จุดวัด":"Measurement point","เวลาสำรวจ":"Survey time","รายละเอียด":"Details","ดูข้อมูล":"View details",
  "บริษัทที่ต้องติดตาม":"Companies requiring attention","รอรายงาน":"Awaiting reports","ส่งรายงานครบแล้ว":"All reports submitted","เปรียบเทียบแนวโน้มระดับน้ำ":"Compare water-level trends","ย้อนหลัง 7 วัน ณ วันที่เลือก":"Previous 7 days from selected date","สถานะการส่งรายงาน":"Reporting status","ทุกสถานะ":"All statuses","ประวัติระดับน้ำและรายงาน":"Water-level and report history","เก็บทุกรอบที่ส่ง โดยไม่เขียนทับรายงานเดิม":"Every submission is retained; previous reports are not overwritten","ประวัติการรายงาน":"Report history","ดูรูป":"View photos",
@@ -34,6 +34,8 @@ function thaiSource(value:string){
  let output=thaiByEnglish.get(core)??core;
  if(output===core){
   output=output
+   .replace(/^Daily reports for (\d+) companies · SMG MANUFACTURING CLUB$/,(_,n)=>`รายงานประจำวัน ${n} บริษัท · SMG MANUFACTURING CLUB`)
+   .replace(/^Historical water-level monitoring · SMG MANUFACTURING CLUB$/,()=>`ติดตามระดับน้ำย้อนหลัง · SMG MANUFACTURING CLUB`)
    .replace(/^Overview of (\d+) companies$/,(_,n)=>`ภาพรวม ${n} บริษัท`)
    .replace(/^Page (\d+) \/ (\d+)$/,(_,a,b)=>`หน้า ${a} / ${b}`)
    .replace(/^Photo (\d+)$/,(_,n)=>`ภาพที่ ${n}`)
@@ -57,6 +59,8 @@ function translated(value:string){
  let output=translations[core]??core;
  if(output===core){
   output=output
+   .replace(/^รายงานประจำวัน (\d+) บริษัท · SMG MANUFACTURING CLUB$/,(_,n)=>`Daily reports for ${n} companies · SMG MANUFACTURING CLUB`)
+   .replace(/^ติดตามระดับน้ำย้อนหลัง · SMG MANUFACTURING CLUB$/,()=>`Historical water-level monitoring · SMG MANUFACTURING CLUB`)
    .replace(/^ภาพรวม (\d+) บริษัท$/,(_,n)=>`Overview of ${n} companies`)
    .replace(/^หน้า (\d+) \/ (\d+)$/,(_,a,b)=>`Page ${a} / ${b}`)
    .replace(/^ภาพที่ (\d+)$/,(_,n)=>`Photo ${n}`)
@@ -111,6 +115,11 @@ export default function LanguageToggle(){
   const observer=new MutationObserver(records=>{
    if(translating)return;
    translating=true;observer.disconnect();
+   // React reuses text nodes when fresh report data arrives. Refresh the
+   // stored Thai source first so old counts/statuses cannot overwrite it.
+   for(const record of records){
+    if(record.type==='characterData')originalText.set(record.target as Text,thaiSource(record.target.nodeValue??''));
+   }
    for(const record of records){
     if(record.type==='characterData'&&record.target.parentNode)applyLanguage(language,record.target.parentNode);
     for(const node of Array.from(record.addedNodes))if(node.nodeType===Node.ELEMENT_NODE)applyLanguage(language,node as Element);else if(node.nodeType===Node.TEXT_NODE&&node.parentNode)applyLanguage(language,node.parentNode);
