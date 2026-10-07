@@ -25,7 +25,7 @@ export default function PrintView({date}:{date:string}){
   const viewport=previewRef.current,report=reportRef.current;
   if(!viewport||!report)return;
   const resize=()=>{
-   const scale=Math.min(1,viewport.clientWidth/report.offsetWidth);
+   const scale=Math.min(1.5,viewport.clientWidth/report.offsetWidth);
    setPreviewSize({scale,height:report.offsetHeight*scale});
   };
   const observer=new ResizeObserver(resize);
