@@ -3,9 +3,9 @@
  @page{size:A4 portrait;margin:10mm}
  html,body,.app{margin:0!important;padding:0!important;background:#fff!important;width:auto!important;min-width:0!important}
  .app>header,.app>[data-slot=tabs],.app>[data-sonner-toaster],.app>div:not(.pdf-report),[data-slot=dialog-portal]{display:none!important}
- .pdf-report{display:block!important;font-family:'Noto Sans Thai',Tahoma,Arial,sans-serif;color:#142d4f;font-size:11px;line-height:1.35;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .pdf-report{display:block!important;width:190mm!important;min-width:190mm!important;max-width:190mm!important;margin:0 auto!important;font-family:'Noto Sans Thai',Tahoma,Arial,sans-serif;color:#142d4f;font-size:11px;line-height:1.35;print-color-adjust:exact;-webkit-print-color-adjust:exact}
  .pdf-report *{box-sizing:border-box}
- .pdf-sheet{display:block;width:100%;height:auto;overflow:visible;break-after:page;page-break-after:always}
+ .pdf-sheet{display:block;width:190mm!important;min-width:190mm!important;max-width:190mm!important;height:auto;overflow:visible;break-after:page;page-break-after:always}
  .pdf-sheet:last-child{break-after:auto;page-break-after:auto}
  .pdf-heading{display:block;position:relative;text-align:center;margin:0 0 1.5mm;padding:0;min-height:0;break-inside:avoid}
  .pdf-brand-block{display:block;min-width:0;width:100%;padding:0 34mm;text-align:center}
